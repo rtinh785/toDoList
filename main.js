@@ -1,8 +1,12 @@
-const tasks = [];
+const tasks = JSON.parse(localStorage.getItem("tasks")) ?? [];
 
 const taskList = document.querySelector("#task-list");
 const toDoForm = document.querySelector("#todo-form");
 const toDoInput = document.querySelector("#todo-input");
+
+function saveTasks() {
+   localStorage.setItem("tasks", JSON.stringify(tasks));
+}
 
 function checkDuplicate(value, taskIndex) {
    if (
@@ -19,6 +23,7 @@ function checkDuplicate(value, taskIndex) {
 
 taskList.onclick = function (e) {
    const taskItem = e.target.closest(".task-item");
+   if (!taskItem) return;
    const taskIndex = +taskItem.getAttribute("task-index");
 
    if (e.target.closest(".edit")) {
@@ -40,6 +45,7 @@ taskList.onclick = function (e) {
    } else if (e.target.closest(".delete")) {
       tasks.splice(taskIndex, 1);
    }
+   saveTasks();
    renderTaskList();
 };
 
@@ -56,10 +62,11 @@ toDoForm.onsubmit = function (e) {
 
    const task = {
       title: value,
-      complete: false,
+      completed: false,
    };
 
    tasks.unshift(task);
+   saveTasks();
    renderTaskList();
    toDoInput.value = "";
 };
