@@ -8,6 +8,12 @@ function saveTasks() {
    localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
+function escapeHTML(html) {
+   const div = document.createElement("div");
+   div.innerText = html;
+   return div.innerHTML;
+}
+
 function checkDuplicate(value, taskIndex) {
    if (
       tasks.some(
@@ -24,7 +30,7 @@ function checkDuplicate(value, taskIndex) {
 taskList.onclick = function (e) {
    const taskItem = e.target.closest(".task-item");
    if (!taskItem) return;
-   const taskIndex = +taskItem.getAttribute("task-index");
+   const taskIndex = +taskItem.dataset.index;
 
    if (e.target.closest(".edit")) {
       const newTitle = prompt(
@@ -80,8 +86,8 @@ function renderTaskList() {
             (task, index) =>
                `<li class="task-item ${
                   task.completed ? "completed" : ""
-               }" task-index=${index}>
-         <span class="task-title">${task.title}</span>
+               }" data-index=${index}>
+         <span class="task-title">${escapeHTML(task.title)}</span>
          <div class="task-action">
              <button class="task-btn edit">Edit</button>
              <button class="task-btn done">${
